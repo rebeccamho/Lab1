@@ -72,7 +72,7 @@
 #include <stdint.h>
 #include "ST7735.h"
 #include "PLL.h"
-#include "../inc/tm4c123gh6pm.h"
+#include "../ValvanoWareTM4C123/ValvanoWareTM4C123/inc/tm4c123gh6pm.h"
 
 void DelayWait10ms(uint32_t n);
 
