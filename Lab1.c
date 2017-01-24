@@ -22,7 +22,7 @@
 #include "ST7735.h"
 #include "PLL.h"
 #include "fixed.h"
-#include "inc/tm4c123gh6pm.h"
+#include "../ValvanoWareTM4C123/ValvanoWareTM4C123/inc/tm4c123gh6pm.h"
 void DelayWait10ms(uint32_t n);
 void PortF_Init(void);
 // const will place these structures in ROM
@@ -95,7 +95,7 @@ const int32_t StarYbuf[50] = {190, 172, 154, 136, 118, 100, 81, 63, 45, 27, 9, 2
 };
 
 int main(void){uint32_t i;
-  PLL_Init();
+  PLL_Init(Bus80MHz);
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
@@ -107,7 +107,7 @@ int main(void){uint32_t i;
       ST7735_OutString((char*)outTests1[i].OutBuffer); // expected solution
     }
     Pause();
-  
+		/*
     ST7735_FillScreen(0);  // set screen to black
     ST7735_SetCursor(0,0);
     printf("ST7735_uBinOut8\r");
@@ -124,6 +124,7 @@ int main(void){uint32_t i;
     ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
     ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
     Pause(); 
+		*/
   } 
 } 
 

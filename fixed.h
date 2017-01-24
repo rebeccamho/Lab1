@@ -1,9 +1,10 @@
 // filename ******** fixed.h ************** 
 // possible header file for Lab 1 Spring 2017
 // feel free to change the specific syntax of your system
-// put your name here
-// put the date here
+// Matt Owens & Rebecca Ho
+// 1/26/17
 
+#include "stdint.h"
 
 /****************ST7735_sDecOut3***************
  converts fixed point number to LCD
