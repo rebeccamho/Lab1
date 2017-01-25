@@ -99,7 +99,6 @@ int main(void){uint32_t i;
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
-		
     ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
     printf("Lab 1\rST7735_sDecOut3\r");
