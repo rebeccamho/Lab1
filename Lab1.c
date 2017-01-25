@@ -99,6 +99,7 @@ int main(void){uint32_t i;
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
+		
     ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
     printf("Lab 1\rST7735_sDecOut3\r");
@@ -116,15 +117,20 @@ int main(void){uint32_t i;
       ST7735_OutString((char*)outTests2[i].OutBuffer); // expected solution
     }
     Pause();
-    
+    */
+		
+		ST7735_FillScreen(0);  // set screen to black
+    ST7735_SetCursor(0,0);
     ST7735_XYplotInit("Circle",-2500, 2500, -2500, 2500);
     ST7735_XYplot(180,(int32_t *)CircleXbuf,(int32_t *)CircleYbuf);
     Pause();
     
+		ST7735_FillScreen(0);  // set screen to black
+    ST7735_SetCursor(0,0);
     ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
     ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
     Pause(); 
-		*/
+		
   } 
 } 
 
