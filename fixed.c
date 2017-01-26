@@ -1,3 +1,8 @@
+// filename ******** fixed.c ************** 
+// Lab 1 Spring 2017
+// Matt Owens & Rebecca Ho
+// 1/26/17
+
 #include "stdint.h"
 #include "stdbool.h"
 #include "ST7735.h"
@@ -43,27 +48,27 @@ void ST7735_sDecOut3(int32_t n) {
 }
 
 void ST7735_uBinOut8(int32_t n){
-	if(n < 0 || n >= 256000){ // number n out of range, output '***.**'
-		ST7735_OutChar('*');
-		ST7735_OutChar('*');
-		ST7735_OutChar('*');
-		ST7735_OutChar('.');
-		ST7735_OutChar('*');
-		ST7735_OutChar('*');
-		return;
-	}
+		if(n < 0 || n >= 256000){ // number n out of range, output '***.**'
+				ST7735_OutChar('*');
+				ST7735_OutChar('*');
+				ST7735_OutChar('*');
+				ST7735_OutChar('.');
+				ST7735_OutChar('*');
+				ST7735_OutChar('*');
+				return;
+		}
 	
-	if(n < 0)
-		n = n * -1;
-	
-	n = (n * 100) / 256; //produces an integer for nice breakdown into digits
-	int i;
-	int digits[] = {0, 0, 0, 0, 0};
-	//calculate digits
-	for(i=4; i>=0; i--){
-		digits[i] = n % 10;
-		n = (n - digits[i]) / 10; //remove digit in one's place, then shift all digits down (100's to 10's place, 10's to 1's, etc.)
-	}
+		if(n < 0)
+				n = n * -1;
+		
+		n = (n * 100) / 256; //produces an integer for nice breakdown into digits
+		int i;
+		int digits[] = {0, 0, 0, 0, 0};
+		//calculate digits
+		for(i=4; i>=0; i--){
+				digits[i] = n % 10;
+				n = (n - digits[i]) / 10; //remove digit in one's place, then shift all digits down (100's to 10's place, 10's to 1's, etc.)
+		}
 	
 	//print digits
 	bool validUpperDigit = false;
@@ -84,7 +89,7 @@ void ST7735_uBinOut8(int32_t n){
 		}
 		else
 			ST7735_OutChar((char) digits[i]+48);
-		}
+	}
 }
 
 void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, int32_t maxY) {
