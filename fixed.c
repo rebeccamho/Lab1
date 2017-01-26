@@ -56,7 +56,7 @@ void ST7735_uBinOut8(int32_t n){
 	if(n < 0)
 		n = n * -1;
 	
-	n = n / 256 * 100; //produces an integer for nice breakdown into digits
+	n = (n * 100) / 256; //produces an integer for nice breakdown into digits
 	int i;
 	int digits[] = {0, 0, 0, 0, 0};
 	//calculate digits
