@@ -43,7 +43,7 @@ void ST7735_sDecOut3(int32_t n) {
 }
 
 void ST7735_uBinOut8(int32_t n){
-	if(n < 0 || n > 256000){ // number n out of range, output '***.**'
+	if(n < 0 || n >= 256000){ // number n out of range, output '***.**'
 		ST7735_OutChar('*');
 		ST7735_OutChar('*');
 		ST7735_OutChar('*');
@@ -66,10 +66,16 @@ void ST7735_uBinOut8(int32_t n){
 	}
 	
 	//print digits
+	bool validUpperDigit = false;
 	for(i = 0; i < 5; i++){
 		//if 10's, 100's or 1000's place empty, we print a space, not a zero
-		if(i <= 2 && digits[i] == 0){
-			ST7735_OutChar(' ');
+		if(i < 2){
+			if(digits[i] == 0 && validUpperDigit == false)
+				ST7735_OutChar(' ');
+			else{
+				validUpperDigit = true;
+				ST7735_OutChar((char) digits[i]+48);
+			}
 		}	
 		//else print digit normally
 		else if (i == 3){
