@@ -98,6 +98,7 @@ int main(void){uint32_t i;
   PLL_Init(Bus80MHz);
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
+	// create functions for testing each function instead of while loop
   while(1){
     ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
@@ -107,7 +108,7 @@ int main(void){uint32_t i;
       ST7735_OutString((char*)outTests1[i].OutBuffer); // expected solution
     }
     Pause();
-		/*
+		
     ST7735_FillScreen(0);  // set screen to black
     ST7735_SetCursor(0,0);
     printf("ST7735_uBinOut8\r");
@@ -116,7 +117,6 @@ int main(void){uint32_t i;
       ST7735_OutString((char*)outTests2[i].OutBuffer); // expected solution
     }
     Pause();
-    */
 		
 		ST7735_FillScreen(0);  // set screen to black
     ST7735_SetCursor(0,0);

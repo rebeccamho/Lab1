@@ -93,7 +93,7 @@ void ST7735_uBinOut8(int32_t n){
 }
 
 void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, int32_t maxY) {
-		*plot_title = *title;
+		plot_title = title;
 		plot_minX = minX;
 		plot_maxX = maxX;
 		plot_minY = minY;
@@ -102,11 +102,12 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
 
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]) {
 		// x ranges from 0 to 127, y ranges from 32 to 159
+		ST7735_OutString(plot_title);
 		int16_t x = 0;
 		int16_t y = 0;
 		for(int i = 0; i < num; i++) {
 				x = 127*(bufX[i] - plot_minX)/(plot_maxX - plot_minX);
-				y = 32 + 127*(bufY[i] - plot_minY)/(plot_maxY - plot_minY);
+				y = 32 + 127*(plot_maxY - bufY[i])/(plot_maxY - plot_minY);
 				ST7735_DrawPixel(x, y, ST7735_BLUE);			
 		}
 }
