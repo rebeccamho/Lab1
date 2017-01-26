@@ -1,6 +1,5 @@
 // filename ******** fixed.h ************** 
-// possible header file for Lab 1 Spring 2017
-// feel free to change the specific syntax of your system
+// Lab 1 Spring 2017
 // Matt Owens & Rebecca Ho
 // 1/26/17
 
