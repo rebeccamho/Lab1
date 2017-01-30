@@ -25,6 +25,12 @@
 #include "../ValvanoWareTM4C123/ValvanoWareTM4C123/inc/tm4c123gh6pm.h"
 void DelayWait10ms(uint32_t n);
 void PortF_Init(void);
+void clearScreen(void);
+void test_ST7735_sDecOut3(void);
+void test_ST7735_uBinOut8(void);
+void test_ST7735_XYplot_Circle(void);
+void test_ST7735_XYplot_Star(void);
+
 // const will place these structures in ROM
 
 struct outTestCase1{    // used to test routines
@@ -94,43 +100,28 @@ const int32_t StarXbuf[50] = {0, -6, -12, -18, -24, -30, -35, -41, -47, -53, 59,
 const int32_t StarYbuf[50] = {190, 172, 154, 136, 118, 100, 81, 63, 45, 27, 9, 27, 45, 63, 81, 100, 118, 136, 154, 172, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 9, 20, 31, 43, 54, 65, 76, 87, 99, 110, 121, 110, 99, 87, 76, 65, 54, 43, 31, 20
 };
 
-int main(void){uint32_t i;
+int main(void){
   PLL_Init(Bus80MHz);
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
-	// create functions for testing each function instead of while loop
-  while(1){
-    ST7735_FillScreen(ST7735_BLACK); 
-    ST7735_SetCursor(0,0);
-    printf("Lab 1\rST7735_sDecOut3\r");
-    for(i=0; i<13; i++){
-      ST7735_sDecOut3(outTests1[i].InNumber);  // your solution
-      ST7735_OutString((char*)outTests1[i].OutBuffer); // expected solution
-    }
-    Pause();
-		
-    ST7735_FillScreen(0);  // set screen to black
-    ST7735_SetCursor(0,0);
-    printf("ST7735_uBinOut8\r");
-    for(i=0; i<14; i++){
-      ST7735_uBinOut8(outTests2[i].InNumber);  // your solution
-      ST7735_OutString((char*)outTests2[i].OutBuffer); // expected solution
-    }
-    Pause();
-		
-		ST7735_FillScreen(0);  // set screen to black
-    ST7735_SetCursor(0,0);
-    ST7735_XYplotInit("Circle",-2500, 2500, -2500, 2500);
-    ST7735_XYplot(180,(int32_t *)CircleXbuf,(int32_t *)CircleYbuf);
-    Pause();
-    
-		ST7735_FillScreen(0);  // set screen to black
-    ST7735_SetCursor(0,0);
-    ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
-    ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
-    Pause(); 
-		
-  } 
+  
+	// Test Decimal Fixed-Point Function
+	test_ST7735_sDecOut3();
+	Pause();
+	clearScreen();
+	
+	// Test Binary Fixed-Point Function
+	test_ST7735_uBinOut8();
+	Pause();
+	clearScreen();
+	
+	// Test XY plot
+	test_ST7735_XYplot_Circle();
+	Pause();
+	clearScreen();
+	test_ST7735_XYplot_Star();
+	Pause();
+	clearScreen();
 } 
 
 // PF4 is input
@@ -149,7 +140,7 @@ void PortF_Init(void){
 
 
 int main4(void){ 
-  PortF_Init();
+	PortF_Init();
   while(1){
     DelayWait10ms(1);
     PF2 ^= 0x04;
@@ -168,11 +159,48 @@ int main5(void){
 // Outputs: None
 // Notes: ...
 void DelayWait10ms(uint32_t n){uint32_t volatile time;
-  while(n){
+	while(n){
     time = 727240*2/91;  // 10msec
     while(time){
 	  	time--;
     }
     n--;
   }
+}
+
+void clearScreen() {
+	ST7735_FillScreen(0);  // set screen to black
+  ST7735_SetCursor(0,0);
+}
+
+void test_ST7735_sDecOut3() {
+  ST7735_FillScreen(ST7735_BLACK); 
+  ST7735_SetCursor(0,0);
+  printf("Lab 1\rST7735_sDecOut3\r");
+  for(int i=0; i<13; i++){
+	  ST7735_sDecOut3(outTests1[i].InNumber);  // your solution
+	  ST7735_OutString((char*)outTests1[i].OutBuffer); // expected solution
+  }
+}
+
+void test_ST7735_uBinOut8() {
+	printf("ST7735_uBinOut8\r");
+  for(int i=0; i<14; i++){
+    ST7735_uBinOut8(outTests2[i].InNumber);  // your solution
+    ST7735_OutString((char*)outTests2[i].OutBuffer); // expected solution
+  }
+}
+
+void test_ST7735_XYplot_Circle() {
+  ST7735_FillScreen(0);  // set screen to black
+  ST7735_SetCursor(0,0);
+  ST7735_XYplotInit("Circle",-2500, 2500, -2500, 2500);
+  ST7735_XYplot(180,(int32_t *)CircleXbuf,(int32_t *)CircleYbuf); 
+}
+
+void test_ST7735_XYplot_Star() {
+	ST7735_FillScreen(0);  // set screen to black
+  ST7735_SetCursor(0,0);
+  ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
+  ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
 }
