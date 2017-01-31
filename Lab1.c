@@ -105,23 +105,26 @@ int main(void){
   PortF_Init();
   ST7735_InitR(INITR_REDTAB);
   
-	// Test Decimal Fixed-Point Function
-	test_ST7735_sDecOut3();
-	Pause();
-	clearScreen();
+	while(1){
+		// Test Decimal Fixed-Point Function
+		test_ST7735_sDecOut3();
+		Pause();
+		clearScreen();
+		
+		// Test Binary Fixed-Point Function
+		test_ST7735_uBinOut8();
+		Pause();
+		clearScreen();
+		
+		// Test XY plot
+		test_ST7735_XYplot_Circle();
+		Pause();
+		clearScreen();
+		test_ST7735_XYplot_Star();
+		Pause();
+		clearScreen();
+	}
 	
-	// Test Binary Fixed-Point Function
-	test_ST7735_uBinOut8();
-	Pause();
-	clearScreen();
-	
-	// Test XY plot
-	test_ST7735_XYplot_Circle();
-	Pause();
-	clearScreen();
-	test_ST7735_XYplot_Star();
-	Pause();
-	clearScreen();
 } 
 
 // PF4 is input
