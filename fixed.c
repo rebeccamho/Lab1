@@ -103,11 +103,87 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]) {
 	// x ranges from 0 to 127, y ranges from 32 to 159
 	ST7735_OutString(plot_title);
-	int16_t x = 0;
-	int16_t y = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 	for(int i = 0; i < num; i++) {
 			x = 127*(bufX[i] - plot_minX)/(plot_maxX - plot_minX);
 			y = 32 + 127*(plot_maxY - bufY[i])/(plot_maxY - plot_minY);
 			ST7735_DrawPixel(x, y, ST7735_BLUE);			
 	}
+	
+	
 }
+
+void ST7735_OutputNumber(uint32_t val) {
+	if(val > 9999) { // number is out of range
+			ST7735_OutChar('*');
+			for(int i = 0; i < 3; i++) {
+					ST7735_OutChar('*');
+			}
+			return;
+	}
+	uint32_t rem = val % 1000;
+	uint32_t thous = val / 1000; // thousands place
+	int32_t hund = rem / 100; // hundreds place
+	rem = rem % 100;
+	int32_t tens = rem / 10; // tens place
+	int32_t ones = rem % 10; // ones place
+		
+	ST7735_OutChar((char) thous+48);
+	ST7735_OutChar((char) hund+48);
+	ST7735_OutChar((char) tens+48);
+	ST7735_OutChar((char) ones+48);
+}
+
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+	uint16_t y;
+	uint16_t x;
+
+	int16_t rise = y2 - y1;
+	int16_t run = x2 - x1;
+	if(run == 0) { // no change in x, avoid divide by 0
+		for(y = y1; y <= y2; y++) {
+			ST7735_DrawPixel(x1, y, color);
+		}
+	} else {
+		bool neg = false;
+		int16_t slope = rise/run;
+		if(slope < 0) { 
+			neg = true; 
+			slope = -slope;
+		}
+		int16_t deficit = rise - slope*run; // amt of y not reached bc of rounding of slope
+		if(deficit < 0) { deficit = -deficit; }
+		uint16_t n = run/deficit; // need to add an extra pixel every n times to make up for deficit
+		uint16_t turn_count = 1; // way to keep track of when to add extra pixel
+		y = y1;
+		
+		for(x = x1; x <= x2; x++) {
+			for(int i = 0; i <= slope; i++) { // draw line along x1-x2
+				ST7735_DrawPixel(x, y, color);
+				if(neg) { y = y - 1; }
+				else { y++; }
+			}
+			if(turn_count == n && deficit > 0) {
+				ST7735_DrawPixel(x, y, color);
+				if(neg) { y = y - 1; }
+				else { y++; }
+				deficit = deficit - 1;
+				turn_count = 0; // reset turn_count
+			}
+			turn_count++;
+		}
+		while(deficit > 0) {
+			ST7735_DrawPixel(x2, y, color);
+			if(neg) { y = y - 1; }
+			else { y++; }
+			deficit = deficit - 1;
+		}
+		ST7735_SetCursor(0,0);
+		ST7735_OutString("Final x,y: ");
+		ST7735_OutputNumber(x);
+		ST7735_OutChar(',');
+		ST7735_OutputNumber(y);		
+	}
+}
+
