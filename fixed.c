@@ -173,7 +173,7 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 		uint16_t x_deficit = 0;
 		if(y_deficit > 0) {
 			x_deficit = run - n*y_deficit - 1; // amt of x not reached bc of rounding of n
-			m = (rise/slope)/x_deficit; // need to add an extra pixel in x dir every m times to make up for x_deficit
+			m = run/x_deficit; // need to add an extra pixel in x dir every m times to make up for x_deficit
 		}
 		uint16_t y_turn_count = 1; // way to keep track of when to add extra y pixel
 		uint16_t x_turn_count = 1; // way to keep track of when to add extra x pixel
@@ -190,7 +190,7 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 				last_x = x; last_y = y;
 				x++;
 				x_deficit = x_deficit - 1;
-				x_turn_count = 0;
+				x_turn_count = 0; // reset x_turn_count
 			}
 			if(y_turn_count == n) { // %% y_deficit > 0
 				ST7735_DrawPixel(x, y, color);
@@ -198,7 +198,7 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 				if(neg) { y = y - 1; }
 				else { y++; }
 				y_deficit = y_deficit - 1;
-				y_turn_count = 0; // reset turn_count
+				y_turn_count = 0; // reset y_turn_count
 			}
 
 			y_turn_count++;
