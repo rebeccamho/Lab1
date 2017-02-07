@@ -136,54 +136,101 @@ void ST7735_OutputNumber(uint32_t val) {
 }
 
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
-	uint16_t y;
-	uint16_t x;
+	uint16_t last_x = 0; // for debug only
+	uint16_t last_y = 0; // for debug only
+	uint16_t y = y1;
+	uint16_t x  = x1;
 
 	int16_t rise = y2 - y1;
 	int16_t run = x2 - x1;
 	if(run == 0) { // no change in x, avoid divide by 0
-		for(y = y1; y <= y2; y++) {
-			ST7735_DrawPixel(x1, y, color);
+		if(y2 > y1) {
+			for(y = y1; y <= y2; y++) {
+				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
+			}
+		} else {
+			for(y = y1; y >= y2; y = y-1) {
+				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
+			}
+		}
+	} else if(rise == 0) {
+		for(x = x1; x <= x2; x++) {
+			ST7735_DrawPixel(x, y, color);
+			last_x = x; last_y = y;
 		}
 	} else {
 		bool neg = false;
-		int16_t slope = rise/run;
-		if(slope < 0) { 
+		if(rise < 0) { // slope will be negative bc rise is negative
 			neg = true; 
-			slope = -slope;
+			rise = -rise;
 		}
-		int16_t deficit = rise - slope*run; // amt of y not reached bc of rounding of slope
-		if(deficit < 0) { deficit = -deficit; }
-		uint16_t n = run/deficit; // need to add an extra pixel every n times to make up for deficit
-		uint16_t turn_count = 1; // way to keep track of when to add extra pixel
-		y = y1;
+		int16_t slope = rise/run;
+		int16_t y_deficit = rise - slope*run; // amt of y not reached bc of rounding of slope
+		uint16_t n = run/y_deficit; // need to add an extra pixel in y dir every n times to make up for y_deficit
+		uint16_t m = 0;
+		uint16_t x_deficit = 0;
+		if(y_deficit > 0) {
+			x_deficit = run - n*y_deficit - 1; // amt of x not reached bc of rounding of n
+			m = (rise/slope)/x_deficit; // need to add an extra pixel in x dir every m times to make up for x_deficit
+		}
+		uint16_t y_turn_count = 1; // way to keep track of when to add extra y pixel
+		uint16_t x_turn_count = 1; // way to keep track of when to add extra x pixel
 		
 		for(x = x1; x <= x2; x++) {
-			for(int i = 0; i <= slope; i++) { // draw line along x1-x2
+			for(int i = 0; i < slope; i++) { // draw line along x1-x2
 				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
 				if(neg) { y = y - 1; }
 				else { y++; }
 			}
-			if(turn_count == n && deficit > 0) {
+			if(x_turn_count == m && x_deficit > 0) {
 				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
+				x++;
+				x_deficit = x_deficit - 1;
+				x_turn_count = 0;
+			}
+			if(y_turn_count == n) { // %% y_deficit > 0
+				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
 				if(neg) { y = y - 1; }
 				else { y++; }
-				deficit = deficit - 1;
-				turn_count = 0; // reset turn_count
+				y_deficit = y_deficit - 1;
+				y_turn_count = 0; // reset turn_count
 			}
-			turn_count++;
+
+			y_turn_count++;
+			x_turn_count++;
 		}
-		while(deficit > 0) {
-			ST7735_DrawPixel(x2, y, color);
-			if(neg) { y = y - 1; }
-			else { y++; }
-			deficit = deficit - 1;
-		}
-		ST7735_SetCursor(0,0);
-		ST7735_OutString("Final x,y: ");
-		ST7735_OutputNumber(x);
-		ST7735_OutChar(',');
-		ST7735_OutputNumber(y);		
+		while(y_deficit > 0) {			
+			for(int i = 0; i < slope; i++) { // draw line along x1-x2
+				ST7735_DrawPixel(x, y, color);
+				last_x = x; last_y = y;
+				if(neg) { y = y - 1; }
+				else { y++; }
+				y_deficit = y_deficit - 1;
+			}
+			x++;
+		}	
+		/*
+		while(x_deficit > 0) {
+			ST7735_DrawPixel(x, y2, color);
+			last_x = x; last_y = y;
+			x++;
+			x_deficit = x_deficit - 1;
+		}			
+			*/
 	}
+	
+	/*
+	ST7735_SetCursor(0,0);
+	ST7735_OutString("Final x,y: ");
+	ST7735_OutputNumber(last_x);
+	ST7735_OutChar(',');
+	ST7735_OutputNumber(last_y);
+	*/
+	
 }
 
