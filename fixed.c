@@ -244,3 +244,25 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 	
 }
 
+void ST7735_Line2(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color){
+	//deltaX > deltaY, deltaX and deltaY positive
+	//draw first point
+	int16_t xPixel = x1;
+	int16_t yPixel = y1;
+	ST7735_DrawPixel(xPixel, yPixel, color);
+	//set up pieces of equation
+	int16_t deltaX = x2 - x1;
+	int16_t deltaY = y2 - y1;
+	int16_t j = y1;
+	int16_t err = deltaY - deltaX;
+	for(int i = x1; i < x2 - 1; i++){
+		ST7735_DrawPixel(i, j, color);
+		if(err >= 0){
+			j++;
+			err = err - deltaX;
+		}
+		err += deltaY;
+	}
+	
+}
+
