@@ -108,7 +108,7 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]) {
 	for(int i = 0; i < num; i++) {
 			x = 127*(bufX[i] - plot_minX)/(plot_maxX - plot_minX);
 			y = 32 + 127*(plot_maxY - bufY[i])/(plot_maxY - plot_minY);
-			ST7735_DrawPixel(x, y, ST7735_BLUE);			
+			ST7735_DrawPixel(x, y, ST7735_WHITE);			
 	}
 	
 	
@@ -136,6 +136,16 @@ void ST7735_OutputNumber(uint32_t val) {
 }
 
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+	//swap point 1 and point 2 if point 2 is left of point 1
+	if(x1 > x2){
+		int16_t tempX = x1;
+		x1 = x2;
+		x2 = tempX;
+		int16_t tempY = y1;
+		y1 = y2;
+		y2 = tempY;
+	}
+	
 	uint16_t last_x = 0; // for debug only
 	uint16_t last_y = 0; // for debug only
 	uint16_t y = y1;
