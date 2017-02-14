@@ -135,7 +135,7 @@ void ST7735_OutputNumber(uint32_t val) {
 	ST7735_OutChar((char) ones+48);
 }
 
-void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void ST7735_Line2(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 	//swap point 1 and point 2 if point 2 is left of point 1
 	if(x1 > x2){
 		int16_t tempX = x1;
@@ -244,9 +244,17 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 	
 }
 
-void ST7735_Line2(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color){
+void ST7735_Line3(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color){
 	//deltaX > deltaY, deltaX and deltaY positive
 	//draw first point
+	if(x1 > x2){
+		int16_t tempX = x1;
+		x1 = x2;
+		x2 = tempX;
+		int16_t tempY = y1;
+		y1 = y2;
+		y2 = tempY;
+	}
 	int16_t xPixel = x1;
 	int16_t yPixel = y1;
 	ST7735_DrawPixel(xPixel, yPixel, color);
@@ -255,14 +263,86 @@ void ST7735_Line2(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 	int16_t deltaY = y2 - y1;
 	int16_t j = y1;
 	int16_t err = deltaY - deltaX;
-	for(int i = x1; i < x2 - 1; i++){
-		ST7735_DrawPixel(i, j, color);
-		if(err >= 0){
-			j++;
-			err = err - deltaX;
+	bool neg = false;
+	if(err < 0) { neg = true; }
+		
+	if(neg) {
+		int i = x1;
+		err = -err;
+		while(i < x2 - 1){
+			ST7735_DrawPixel(i, j, color);
+			if(err >= 0){
+				j = j-1;
+				err = err - deltaX;
+			}
+			err = err - deltaY;
+			i++;
 		}
-		err += deltaY;
+	}
+	else {
+		for(int i = x1; i < x2 - 1; i++){
+			ST7735_DrawPixel(i, j, color);
+			if(err >= 0){
+				j++;
+				err = err - deltaX;
+			}
+			err += deltaY;
+		}
 	}
 	
 }
 
+
+void ST7735_Line(uint16_t x, uint16_t y, uint16_t x2, uint16_t y2, uint16_t color){
+	int16_t w = x2-x;
+	int16_t h = y2-y;
+	int16_t dx1 = 0;
+	int16_t dy1 = 0;
+	int16_t dx2 = 0;
+	int16_t dy2 = 0;
+	if(w < 0) {
+		dx1 = -1;
+	} else if(w > 0) {
+		dx1 = 1;
+	}
+	if(h < 0) {
+		dy1 = -1;
+	} else if(h > 0) {
+		dy1 = 1;
+	}
+	if(w < 0) {
+		dx2 = -1;
+	} else if(w > 0) {
+		dx2 = 1;
+	}
+	int16_t longest = w;
+	if(longest < 0) { longest = -longest; }
+	int16_t shortest = h;
+	if(shortest < 0) { shortest = -shortest; }
+	
+	if(!(longest > shortest)) {
+		int16_t temp = longest;
+		longest = shortest;
+		shortest = temp;
+		if(h < 0) {
+			dy2 = -1;
+		} else if(h > 0) {
+			dy2 = 1;
+		}
+		dx2 = 0;
+	}
+	int16_t numerator = longest >> 1;
+	for(int i = 0; i <= longest; i++) {
+		ST7735_DrawPixel(x, y, color);
+		numerator += shortest;
+		if(!(numerator < longest)) {
+			numerator = numerator - longest;
+			x+=dx1;
+			y+=dy1;
+		} else {
+			x+=dx2;
+			y+=dy2;
+		}
+	}
+
+}
