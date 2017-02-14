@@ -90,8 +90,8 @@ void ST7735_OutputNumber(uint32_t val);
 					color 16-bit color, which can be produced by ST7735_Color565()
 	Output: none
 */
-void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
-
 void ST7735_Line2(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
+
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 
 
